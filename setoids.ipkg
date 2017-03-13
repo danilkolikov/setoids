@@ -1,0 +1,22 @@
+package setoids
+
+brief = "Some proofs of extensional equalities in Idris"
+author = "Danil Kolikov"
+homepage = "https://github.com/danilkolikov/extensional"
+version = 0.01
+
+sourcedir = src
+
+modules =
+        -- Algebra
+            Algebra.Semigroup, Algebra.Monoid, Algebra.CommutativeMonoid,
+            Algebra.Group, Algebra.Semiring, Algebra.CommutativeSemiring,
+        Relation,
+            Relation.Equality,
+                Relation.Equality.Identical,
+            Relation.Preorder,
+        BinaryOperation,
+        Setoid,
+            Setoid.Natural, Setoid.Identical,
+        Function,
+        Isomorphism
