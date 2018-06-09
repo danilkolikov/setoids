@@ -7,6 +7,8 @@ version = 0.01
 
 sourcedir = src
 
+pkgs = contrib
+
 modules =
         -- Algebra
             Algebra.Semigroup, Algebra.Monoid, Algebra.CommutativeMonoid,
@@ -15,6 +17,7 @@ modules =
             Relation.Equality,
                 Relation.Equality.Identical,
             Relation.Preorder,
+        Operation,
         BinaryOperation,
         Setoid,
             Setoid.Natural, Setoid.Identical,

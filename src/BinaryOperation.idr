@@ -3,6 +3,7 @@ module BinaryOperation
 
 import public Setoid
 import public Function
+import public Operation
 
 %access public export
 %auto_implicits off
@@ -12,29 +13,21 @@ import public Function
 ||| @ A Setoid of first operand
 ||| @ B Setoid of second operand
 ||| @ C Setoid of result
-data BinaryOperation: (A, B, C: Setoid) -> Type where
-    ||| Constructs extensional binary operation
-    ||| @ A Setoid of first operand
-    ||| @ B Setoid of second operand
-    ||| @ C Setoid of result
-    ||| @ applyOp Application of operation
-    ||| @ biCongruence Proof that defined application is congruent by it's arguments, i.e.
-    |||   `x =(A) x', y =(B) y' => apply x y =(C) apply x' y'`
-    MkBinaryOperation: {A, B, C: Setoid}
-        -> (applyOp: Carrier A -> Carrier B -> Carrier C)
-        -> (biCongruence: {x, x': Carrier A} -> {y, y': Carrier B}
-                -> Equal A x x'
-                -> Equal B y y'
-                -> Equal C (applyOp x y) (applyOp x' y')
-            )
-        -> BinaryOperation A B C
+BinaryOperation: (A, B, C : Setoid) -> Type
+BinaryOperation a b c = Operation [a, b] c
+
+MkBinaryOperation: {a, b, c: Setoid}
+    -> (applyOp: Carrier a -> Carrier b -> Carrier c)
+    -> (biCongruence: CongruenceTy [a, b] c applyOp)
+    -> BinaryOperation a b c
+MkBinaryOperation applyOp biCongruence = MkOperation applyOp biCongruence
 
 ||| Apply extensional binary operation
 ||| @ op ensional binary operation
 ||| @ x First operand
 ||| @ y Second operand
 applyOp: {A, B, C: Setoid} -> (op: BinaryOperation A B C) -> (x: Carrier A) -> (y: Carrier B) -> Carrier C
-applyOp (MkBinaryOperation ap _) = ap
+applyOp = ApplyOp
 
 ||| Get proof that extensional binary operation is congruent by it's arguments
 ||| @ op ensional binary operation
@@ -43,7 +36,10 @@ biCongruence: {A, B, C: Setoid} -> (op: BinaryOperation A B C) ->
         -> (Equal B y y')
         -> (Equal C (applyOp op x y) (applyOp op x' y'))
     )
-biCongruence (MkBinaryOperation _ biCong) = biCong
+biCongruence op pf1 pf2 =
+  let cong' = Congruence op in
+  let cong'' = cong' pf1 in
+  cong'' pf2
 
 ||| Closed extensional binary operation, i.e. such operation which
 ||| operands and result belongs to same setoid
