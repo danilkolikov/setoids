@@ -49,7 +49,7 @@ biCongruence (MkBinaryOperation _ biCong) = biCong
 ||| operands and result belongs to same setoid
 ||| @ A Setoid
 ClosedBinaryOperation: (A: Setoid) -> Type
-ClosedBinaryOperation A = BinaryOperation A A A
+ClosedBinaryOperation a = BinaryOperation a a a
 
 ||| Proof that closed extensional binary operation is associative
 ||| @ op Operation
