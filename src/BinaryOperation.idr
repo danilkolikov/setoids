@@ -16,6 +16,13 @@ import public Operation
 BinaryOperation: (A, B, C : Setoid) -> Type
 BinaryOperation a b c = Operation [a, b] c
 
+||| Constructs extensional binary operation
+||| @ a Setoid of first operand
+||| @ b Setoid of second operand
+||| @ c Setoid of result
+||| @ applyOp Application of operation
+||| @ biCongruence Proof that defined application is congruent by it's arguments, i.e.
+|||   `x =(A) x', y =(B) y' => apply x y =(C) apply x' y'`
 MkBinaryOperation: {a, b, c: Setoid}
     -> (applyOp: Carrier a -> Carrier b -> Carrier c)
     -> (biCongruence: CongruenceTy [a, b] c applyOp)
@@ -45,7 +52,7 @@ biCongruence op pf1 pf2 =
 ||| operands and result belongs to same setoid
 ||| @ A Setoid
 ClosedBinaryOperation: (A: Setoid) -> Type
-ClosedBinaryOperation a = BinaryOperation a a a
+ClosedBinaryOperation a = ClosedOperation 2 a
 
 ||| Proof that closed extensional binary operation is associative
 ||| @ op Operation
