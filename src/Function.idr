@@ -60,8 +60,8 @@ data FunctionEquality: {A, B: Setoid} -> (f, g: Function A B) -> Type where
                     -> FunctionEquality f g
 
 ||| Proof that defined equality of extensional functions is indeed equality
-functionEqualityIsEquality: {A, B: Setoid} -> IsEquality (FunctionEquality {A} {B})
-functionEqualityIsEquality {A} {B} with (B)
+functionEqualityIsEquality: {a, b: Setoid} -> IsEquality (FunctionEquality {A = a} {B = b})
+functionEqualityIsEquality {a} {b} with (b)
     | (MkSetoid _ _ (MkIsEquality (MkIsReflexive reflB) (MkIsSymmetric symB) (MkIsTransittive transB)))
     = MkIsEquality
         (MkIsReflexive $ MkFunctionEquality $ reflB)
@@ -74,8 +74,8 @@ functionEqualityIsEquality {A} {B} with (B)
 ||| @ A Domain of functions
 ||| @ B Codomain of functions
 FunctionSetoid: (A, B: Setoid) -> Setoid
-FunctionSetoid A B = MkSetoid
-    (Function A B)
+FunctionSetoid a b = MkSetoid
+    (Function a b)
     FunctionEquality
     functionEqualityIsEquality
 
@@ -94,11 +94,11 @@ compositionIsApplication
     {x} = reflexy refl {x=g $ f x}
 
 ||| Proof that composition of SetoidFunctions is associative
-composeIsAssociative: {A, B, C, D: Setoid} ->
-    {f: Function A B} -> {g: Function B C} -> {h: Function C D} ->
+composeIsAssociative: {a, b, c, d: Setoid} ->
+    {f: Function a b} -> {g: Function b c} -> {h: Function c d} ->
     FunctionEquality (f `compose` (g `compose` h)) ((f `compose` g) `compose` h)
 composeIsAssociative
-    {A} {B} {C} {D=D@(MkSetoid t eq (MkIsEquality r isSymm isTrans))}
+    {a} {b} {c} {d=d@(MkSetoid t eq (MkIsEquality r isSymm isTrans))}
     {f} {g} {h} = MkFunctionEquality qed
     where
         D: Setoid
@@ -107,55 +107,55 @@ composeIsAssociative
         -- It can be done in smaller amount of steps, but it's easier to
         -- understand proof if it has many steps
 
-        step_1: {x: Carrier A}
-            -> Equal C (apply (f `compose` g) x) (apply g (apply f x))
+        step_1: {x: Carrier a}
+            -> Equal c (apply (f `compose` g) x) (apply g (apply f x))
         step_1 = compositionIsApplication f g
 
-        step_2: {x: Carrier A}
+        step_2: {x: Carrier a}
             -> Equal D (apply h (apply (f `compose` g) x)) (apply h (apply g (apply f x)))
         step_2 = congruence h step_1
 
-        step_3: {x: Carrier A}
+        step_3: {x: Carrier a}
             -> Equal D (apply ((f `compose` g) `compose` h) x) (apply h (apply (f `compose` g) x))
         step_3 = compositionIsApplication (f `compose` g) h
 
-        step_4: {x: Carrier A}
+        step_4: {x: Carrier a}
             -> Equal D (apply ((f `compose` g) `compose` h) x) (apply h (apply g (apply f x)))
         step_4 = transit isTrans step_3 step_2
 
-        step_5: {x: Carrier A}
+        step_5: {x: Carrier a}
             -> Equal D (apply (g `compose` h) (apply f x)) (apply h (apply g (apply f x)))
         step_5 = compositionIsApplication g h
 
-        step_6: {x: Carrier A}
+        step_6: {x: Carrier a}
             -> Equal D (apply (f `compose` (g `compose` h)) x) (apply (g `compose` h) (apply f x))
         step_6 = compositionIsApplication f (g `compose` h)
 
-        step_7: {x: Carrier A}
+        step_7: {x: Carrier a}
             -> Equal D (apply (f `compose` (g `compose` h)) x) (apply h (apply g (apply f x)))
         step_7 = transit isTrans step_6 step_5
 
-        qed: {x: Carrier A}
+        qed: {x: Carrier a}
             -> Equal D (apply (f `compose` (g `compose` h)) x) (apply ((f `compose` g) `compose` h) x)
         qed = transit isTrans step_7 $ symmetry isSymm step_4
 
 %auto_implicits off
 
 ||| Proof that identityFun is left identity for composition
-identityIsLeftIdentity: {A, B: Setoid} -> {f: Function A B}
+identityIsLeftIdentity: {a, b: Setoid} -> {f: Function a b}
     -> FunctionEquality (compose identity f) f
 identityIsLeftIdentity
-    {A=(MkSetoid _ _ (MkIsEquality (MkIsReflexive refl) _ _))}
-    {B}
+    {a=(MkSetoid _ _ (MkIsEquality (MkIsReflexive refl) _ _))}
+    {b}
     {f=f@(MkFunction _ _)} =
         MkFunctionEquality $ congruence f refl
 
 ||| Proof that identityFun is right identity for composition
-identityIsRightIdentity: {A, B: Setoid} -> {f: Function A B}
+identityIsRightIdentity: {a, b: Setoid} -> {f: Function a b}
     -> FunctionEquality (f `compose` identity) f
 identityIsRightIdentity
-    {A}
-    {B=(MkSetoid _ _ (MkIsEquality (MkIsReflexive refl) _ _))}
+    {a}
+    {b=(MkSetoid _ _ (MkIsEquality (MkIsReflexive refl) _ _))}
     {f=(MkFunction _ _)}
     = MkFunctionEquality refl
 
