@@ -25,9 +25,9 @@ BinaryOperation a b c = Operation [a, b] c
 |||   `x =(A) x', y =(B) y' => apply x y =(C) apply x' y'`
 MkBinaryOperation: {a, b, c: Setoid}
     -> (applyOp: Carrier a -> Carrier b -> Carrier c)
-    -> (biCongruence: CongruenceTy [a, b] c applyOp)
+    -> (biCongruence: ConstructCongruenceTy [a, b] c applyOp)
     -> BinaryOperation a b c
-MkBinaryOperation applyOp biCongruence = MkOperation applyOp biCongruence
+MkBinaryOperation applyOp = MkOperation applyOp
 
 ||| Apply extensional binary operation
 ||| @ op ensional binary operation
